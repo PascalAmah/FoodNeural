@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://127.0.0.1:5000/api";
+// Use a fixed base URL
+// eslint-disable-next-line no-undef
+const API_BASE_URL = `${process.env.VITE_API_URL}/api`;
 
 export const getFoodImpact = async (foodName) => {
   try {

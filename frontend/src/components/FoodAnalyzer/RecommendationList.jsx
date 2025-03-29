@@ -24,19 +24,23 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
       initial="hidden"
       animate="visible"
       variants={listVariants}
-      className="bg-white p-6 rounded-xl shadow-lg"
+      className="bg-white md:p-6 md:rounded-xl md:shadow-lg"
     >
-      <h2 className="text-xl font-semibold mb-4">Sustainable Alternatives</h2>
+      <h2 className="text-lg md:text-xl font-semibold mb-4">
+        Sustainable Alternatives
+      </h2>
       <ul className="space-y-4">
         {recommendations.map((rec, index) => (
           <Motion.li
             key={index}
             variants={itemVariants}
-            className="p-4 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer 
+            className="p-3 md:p-4 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer 
               transition-colors duration-200"
             onClick={() => onSelectRecommendation(rec.name)}
           >
-            <h3 className="font-medium text-lg text-green-800">{rec.name}</h3>
+            <h3 className="font-medium text-base md:text-lg text-green-800">
+              {rec.name}
+            </h3>
             {rec.sustainability_improvement && (
               <p className="text-green-600 mt-1">
                 {rec.sustainability_improvement}% more sustainable
@@ -47,14 +51,22 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
             )}
             {rec.impact && (
               <div className="mt-2 text-sm text-gray-500">
-                <p>Water usage: {rec.impact.water_usage || "N/A"}</p>
-                <p>Carbon footprint: {rec.impact.carbon_footprint || "N/A"}</p>
+                <p>
+                  Water usage:{" "}
+                  {rec.impact.water
+                    ? `${rec.impact.water.toLocaleString()} L`
+                    : "N/A"}
+                </p>
+                <p>
+                  Carbon footprint:{" "}
+                  {rec.impact.carbon ? `${rec.impact.carbon} kg CO₂` : "N/A"}
+                </p>
               </div>
             )}
           </Motion.li>
         ))}
       </ul>
-      <p className="text-sm text-gray-500 mt-4">
+      <p className="text-xs md:text-sm text-gray-500 mt-4">
         Click on an alternative to analyze its impact
       </p>
     </Motion.div>

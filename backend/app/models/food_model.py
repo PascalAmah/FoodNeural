@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -9,29 +8,35 @@ from typing import Optional
 import logging
 from transformers import pipeline, logging as transformers_logging
 
-# Suppress transformer warnings
 transformers_logging.set_verbosity_error()
 logging.getLogger("transformers").setLevel(logging.ERROR)
 
 class FoodImpactModel:
     def __init__(self, data_path=None):
         """Initialize the food impact model with data"""
-        # Specify model explicitly to avoid warnings
         self.model_name = "distilbert-base-uncased-finetuned-sst-2-english"
         self.nlp = pipeline(
             "sentiment-analysis",
             model=self.model_name,
             framework="pt",
-            device=-1  # Use CPU
+            device=-1
         )
         try:
-            self.sentiment_analyzer = pipeline("sentiment-analysis")
+            self.sentiment_analyzer = pipeline("sentiment-analysis", model=self.model_name)
         except Exception as e:
             print(f"Warning: Could not initialize sentiment analyzer: {e}")
             self.sentiment_analyzer = None
-        if data_path:
+
+        # Load food data from CSV
+        if not data_path:
+            data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'foods.csv')
+        
+        try:
             self.data = pd.read_csv(data_path)
-        else:
+            print(f"Successfully loaded {len(self.data)} food items from {data_path}")
+        except Exception as e:
+            print(f"Warning: Could not load data from {data_path}: {e}")
+            # Fall back to default data
             self.data = pd.DataFrame([
                 {"food": "Almond Milk", "carbon": 1.2, "water": 300, "energy": 0.8, "waste": 0.1, "deforestation": 0.2, "impact": "Medium", "description": "Plant-based milk from almonds"},
                 {"food": "Oat Milk", "carbon": 0.5, "water": 150, "energy": 0.4, "waste": 0.05, "deforestation": 0.1, "impact": "Low", "description": "Sustainable oat-based milk"},

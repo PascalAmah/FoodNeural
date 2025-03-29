@@ -1,0 +1,162 @@
+food,carbon,water,energy,waste,deforestation,impact,description
+Almond Milk,1.2,300,0.8,0.1,0.2,Medium,Plant-based milk from almonds
+Buttermilk,2.5,900,3.2,0.15,1.5,Low,Fermented dairy drink
+Cow Milk,3.2,1000,5.0,0.2,2.0,High,Conventional dairy milk
+Kefir,2.8,950,3.8,0.2,1.6,Medium,Fermented dairy drink
+Oat Milk,0.5,150,0.4,0.05,0.1,Low,Sustainable oat-based milk
+Rice Milk,0.9,270,0.6,0.08,0.5,Low,Rice-based milk
+Soy Milk,0.4,130,0.3,0.04,3.0,Medium,Organic soy milk
+Yogurt,2.2,800,3.0,0.15,1.5,Medium,Regular dairy yogurt
+Brie,8.8,3600,9.5,0.4,2.0,Medium,Soft cheese
+Butter,9.0,5553,12.0,0.4,2.2,High,Dairy butter
+Cheddar,11.0,4500,12.0,0.5,2.3,High,Aged cheese
+Cheese,13.5,5000,14.0,0.5,2.5,High,Dairy cheese
+Cottage Cheese,8.2,3500,9.0,0.4,2.0,Medium,Fresh cheese
+Cream Cheese,7.2,3000,8.0,0.3,1.9,Medium,Soft fresh cheese
+Feta,9.2,3800,10.0,0.4,2.1,Medium,Brined cheese
+Gouda,10.5,4200,11.5,0.5,2.2,High,Semi-hard cheese
+Greek Yogurt,2.4,900,3.5,0.18,1.6,Medium,Strained yogurt
+Ice Cream,5.0,2000,8.0,0.3,1.8,High,Frozen dairy dessert
+Mozzarella,7.8,3200,8.5,0.4,1.9,Medium,Fresh cheese
+Parmesan,13.8,5200,15.0,0.6,2.6,High,Hard aged cheese
+Ricotta,6.5,2800,7.5,0.3,1.8,Medium,Whey cheese
+Sour Cream,4.5,1800,6.0,0.3,1.7,Medium,Fermented dairy
+Apple,0.3,50,0.2,0.02,0.1,Low,Locally grown fruit
+Apricot,0.5,678,0.4,0.03,0.2,Low,Stone fruit
+Avocado,1.3,320,0.9,0.06,1.2,Medium,Nutrient-dense fruit
+Banana,0.7,90,0.3,0.03,0.8,Low,Tropical fruit
+Blackberries,0.7,789,0.6,0.03,0.2,Low,Berry fruit
+Blueberries,0.8,845,0.7,0.04,0.3,Low,Berry fruit
+Cantaloupe,0.7,789,0.6,0.03,0.2,Low,Fresh melon fruit
+Cherries,0.7,789,0.6,0.03,0.2,Low,Stone fruit
+Coconut,1.1,1012,0.9,0.05,0.4,Medium,Tropical fruit
+Dates,0.8,845,0.7,0.04,0.3,Low,Dried fruit
+Figs,0.7,789,0.6,0.03,0.2,Low,Sweet fruit
+Grapes,0.8,845,0.7,0.04,0.3,Low,Vine fruit
+Guava,0.8,845,0.7,0.04,0.3,Low,Tropical fruit
+Jackfruit,0.6,734,0.5,0.03,0.2,Low,Tropical fruit
+Kiwi,0.6,734,0.5,0.03,0.2,Low,Exotic fruit
+Mango,0.9,901,0.7,0.04,0.3,Low,Tropical fruit
+Orange,0.4,80,0.25,0.04,0.3,Low,Citrus fruit
+Papaya,0.8,845,0.7,0.04,0.3,Low,Tropical fruit
+Peaches,0.5,678,0.4,0.03,0.2,Low,Stone fruit
+Pears,0.4,567,0.3,0.02,0.1,Low,Pome fruit
+Pineapple,1.0,956,0.8,0.05,0.4,Medium,Tropical fruit
+Plums,0.5,678,0.4,0.03,0.2,Low,Stone fruit
+Pomegranate,0.7,789,0.6,0.03,0.2,Low,Seeded fruit
+Raspberries,0.7,789,0.6,0.03,0.2,Low,Berry fruit
+Strawberries,0.6,734,0.5,0.03,0.2,Low,Berry fruit
+Watermelon,0.8,845,0.7,0.04,0.3,Low,Fresh melon fruit
+Amaranth,0.8,1312,0.8,0.04,0.3,Low,Ancient grain
+Barley,1.2,1534,1.0,0.06,0.5,Low,Cereal grain
+Brown Rice,2.9,2700,1.7,0.12,0.9,Medium,Whole grain
+Buckwheat,0.9,1367,0.85,0.05,0.3,Low,Pseudo-cereal
+Bulgur,1.0,1423,0.9,0.05,0.4,Low,Cracked wheat
+Cereal,1.3,1589,1.1,0.07,0.6,Medium,Processed grain
+Couscous,1.1,1478,0.95,0.06,0.4,Low,Wheat product
+Farro,1.1,1478,0.95,0.06,0.4,Low,Ancient grain
+Kamut,1.0,1423,0.9,0.05,0.4,Low,Ancient wheat
+Millet,1.0,1423,0.9,0.05,0.4,Low,Ancient grain
+Oats,1.1,1478,0.95,0.06,0.4,Low,Cereal grain
+Pasta,1.2,1534,1.0,0.06,0.5,Low,Wheat product
+Quinoa,0.9,1250,0.8,0.05,0.3,Low,Ancient grain
+Rice,2.7,2500,1.5,0.1,0.8,Medium,White rice
+Rye,1.0,1423,0.9,0.05,0.4,Low,Cereal grain
+Sorghum,1.2,1534,1.0,0.06,0.5,Low,Cereal grain
+Spelt,1.1,1478,0.95,0.06,0.4,Low,Ancient wheat
+Teff,0.9,1367,0.85,0.05,0.3,Low,Ancient grain
+Wheat Bread,0.9,1300,0.7,0.08,0.4,Low,Whole grain bread
+Wild Rice,2.5,2300,1.4,0.09,0.7,Medium,Aquatic grain
+Beef,27.0,15400,40.0,2.5,9.0,High,Grass-fed beef
+Bison,20.5,12000,35.0,2.0,7.0,High,Grass-fed game meat
+Chicken,6.9,4325,15.0,0.8,2.0,Medium,Free-range poultry
+Duck,8.1,4800,18.0,1.0,2.3,High,Waterfowl meat
+Goat,13.2,5500,22.0,1.3,3.2,Medium,Farm-raised meat
+Lamb,39.2,10412,50.0,2.0,7.0,High,Grass-fed lamb
+Pork,12.1,5988,20.0,1.2,3.0,High,Farm-raised pork
+Rabbit,4.8,3800,12.0,0.6,1.5,Medium,Farm-raised game
+Turkey,7.2,4400,16.0,0.9,2.1,Medium,Poultry meat
+Venison,15.3,6200,25.0,1.4,3.5,High,Wild game meat
+Almonds,1.6,1756,1.4,0.1,0.9,Medium,Tree nuts
+Brazil Nuts,1.8,1867,1.6,0.12,1.1,Medium,Tree nuts
+Cashews,1.4,1645,1.2,0.08,0.7,Medium,Tree nuts
+Chestnuts,1.3,1589,1.1,0.07,0.6,Medium,Tree nuts
+Chia Seeds,1.0,1423,0.9,0.05,0.4,Low,Plant seeds
+Fennel Seeds,1.1,1478,0.95,0.06,0.4,Low,Aromatic seeds
+Flax Seeds,1.1,1478,0.95,0.06,0.4,Low,Plant seeds
+Hazelnuts,1.5,1700,1.3,0.09,0.8,Medium,Tree nuts
+Hemp Seeds,1.2,1534,1.0,0.06,0.5,Low,Plant seeds
+Macadamia Nuts,1.7,1812,1.5,0.11,1.0,Medium,Tree nuts
+Peanuts,1.3,1589,1.1,0.07,0.6,Medium,Legume nuts
+Pecans,1.4,1645,1.2,0.08,0.7,Medium,Tree nuts
+Pine Nuts,1.5,1700,1.3,0.09,0.8,Medium,Tree nuts
+Pistachios,1.6,1756,1.4,0.1,0.9,Medium,Tree nuts
+Poppy Seeds,1.1,1478,0.95,0.06,0.4,Low,Plant seeds
+Pumpkin Seeds,1.2,1534,1.0,0.06,0.5,Low,Plant seeds
+Sesame Seeds,1.4,1645,1.2,0.08,0.7,Medium,Plant seeds
+Sunflower Seeds,1.3,1589,1.1,0.07,0.6,Medium,Plant seeds
+Walnuts,1.5,1700,1.3,0.09,0.8,Medium,Tree nuts
+Cod,3.2,2800,15.0,0.3,0.1,Low,White fish
+Crab,8.2,3200,18.0,0.4,0.2,Medium,Shellfish
+Lobster,9.1,3400,20.0,0.5,0.2,Medium,Shellfish
+Salmon,11.9,4000,25.0,0.7,0.5,Medium,Farm-raised salmon
+Sardines,2.8,2400,13.0,0.2,0.1,Low,Small fish
+Shrimp,12.0,3515,22.0,0.5,0.3,High,Farm-raised shrimp
+Tilapia,2.9,2500,14.0,0.3,0.1,Low,Farmed fish
+Trout,3.5,3000,16.0,0.4,0.2,Medium,Freshwater fish
+Tuna,6.1,3000,20.0,0.4,0.1,Medium,Wild-caught tuna
+Adzuki Beans,0.7,1100,0.7,0.03,0.2,Low,Red beans
+Black Beans,0.7,1100,0.7,0.03,0.3,Low,Dried black beans
+Black-Eyed Peas,0.7,1100,0.7,0.03,0.2,Low,Cowpeas
+Cannellini Beans,0.7,1100,0.7,0.03,0.2,Low,White kidney beans
+Chickpeas,0.8,1200,0.75,0.04,0.2,Low,Dried chickpeas
+Edamame,0.9,1200,0.8,0.04,2.8,Medium,Young soybeans
+Fava Beans,0.8,1150,0.75,0.04,0.25,Low,Broad beans
+Kidney Beans,0.8,1150,0.75,0.04,0.25,Low,Red beans
+Lentils,0.9,1250,0.8,0.04,0.2,Low,Dried lentils
+Lima Beans,0.8,1150,0.75,0.04,0.25,Low,Butter beans
+Mung Beans,0.7,1100,0.7,0.03,0.2,Low,Green beans
+Navy Beans,0.7,1100,0.7,0.03,0.2,Low,White beans
+Pinto Beans,0.7,1100,0.7,0.03,0.2,Low,Spotted beans
+Red Lentils,0.9,1250,0.8,0.04,0.2,Low,Split lentils
+Split Peas,0.8,1150,0.75,0.04,0.25,Low,Dried peas
+Yellow Split Peas,0.8,1150,0.75,0.04,0.25,Low,Dried peas
+Beyond Meat,3.5,400,4.0,0.2,0.5,Medium,Plant-based meat alternative
+Eggs,4.8,3300,6.0,0.3,0.4,Medium,Free-range eggs
+Impossible Burger,3.8,450,4.2,0.2,0.6,Medium,Plant-based burger
+Quorn,2.0,320,2.1,0.11,0.3,Medium,Mycoprotein
+Seitan,1.8,280,1.8,0.09,0.4,Low,Wheat protein
+Tempeh,2.2,350,2.2,0.12,2.7,Medium,Fermented soy
+Tofu,2.0,300,2.0,0.1,2.5,Medium,Soy-based protein
+Artichoke,0.4,289,0.24,0.02,0.1,Low,Thistle vegetable
+Asparagus,0.5,378,0.3,0.02,0.1,Low,Green vegetable
+Beets,0.3,237,0.2,0.02,0.1,Low,Root vegetable
+Bell Peppers,0.4,289,0.24,0.02,0.1,Low,Nightshade vegetable
+Broccoli,0.4,322,0.25,0.02,0.1,Low,Cruciferous vegetable
+Brussels Sprouts,0.3,237,0.2,0.02,0.1,Low,Cruciferous vegetable
+Cabbage,0.2,181,0.15,0.02,0.1,Low,Cruciferous vegetable
+Carrot,0.2,35,0.18,0.02,0.1,Low,Root vegetable
+Cauliflower,0.4,285,0.23,0.02,0.1,Low,Cruciferous vegetable
+Celery,0.2,168,0.14,0.02,0.1,Low,Fresh vegetable
+Corn,1.1,1220,0.9,0.07,0.6,Low,Sweet corn
+Cucumber,0.2,153,0.13,0.02,0.1,Low,Fresh vegetable
+Eggplant,0.3,234,0.19,0.02,0.1,Low,Nightshade vegetable
+Garlic,0.4,289,0.24,0.02,0.1,Low,Allium vegetable
+Ginger,0.3,234,0.2,0.02,0.1,Low,Root spice
+Green Beans,0.3,195,0.22,0.02,0.1,Low,Fresh vegetable
+Kale,0.3,237,0.2,0.02,0.1,Low,Leafy green vegetable
+Lettuce,0.2,168,0.14,0.02,0.1,Low,Leafy green vegetable
+Mushrooms,0.3,237,0.2,0.02,0.1,Low,Fungi
+Onions,0.3,237,0.2,0.02,0.1,Low,Allium vegetable
+Parsnips,0.3,237,0.2,0.02,0.1,Low,Root vegetable
+Peas,0.4,289,0.24,0.02,0.1,Low,Legume
+Potato,0.4,287,0.3,0.03,0.2,Low,Root vegetable
+Pumpkin,0.3,237,0.2,0.02,0.1,Low,Winter squash
+Radishes,0.2,168,0.14,0.02,0.1,Low,Root vegetable
+Rutabaga,0.3,237,0.2,0.02,0.1,Low,Root vegetable
+Spinach,0.3,30,0.2,0.01,0.1,Low,Leafy green vegetable
+Squash,0.3,237,0.2,0.02,0.1,Low,Gourd vegetable
+Sweet Potato,0.3,383,0.28,0.03,0.2,Low,Root vegetable
+Tomato,0.2,40,0.15,0.02,0.1,Low,Fresh vegetable
+Turnips,0.2,168,0.14,0.02,0.1,Low,Root vegetable
+Zucchini,0.3,237,0.2,0.02,0.1,Low,Summer squash

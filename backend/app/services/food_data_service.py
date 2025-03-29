@@ -176,10 +176,9 @@ class FoodDataService:
             "leather": 2                                     # Linked to cattle ranching
         }
         
-        # Extract text fields
         ingredients = product.get("ingredients_text", "").lower()
         categories = product.get("categories", "").lower()
-        origin = product.get("origins", "").lower()  # Optional: consider origin if available
+        origin = product.get("origins", "").lower()
         
         risk_score = 0
         
