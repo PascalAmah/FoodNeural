@@ -24,6 +24,11 @@ def _get_impact_preferences() -> Dict[str, float]:
         'deforestation': float(request.args.get('deforestation_weight', 0.3))
     }
 
+@api_bp.route("/", methods=["GET"])
+def home():
+    """Root API endpoint"""
+    return jsonify({"message": "API is running!"}), 200
+
 @api_bp.route('/impact/<food_name>', methods=['GET'])
 def get_food_impact(food_name):
     """Get environmental impact data for a food item"""
