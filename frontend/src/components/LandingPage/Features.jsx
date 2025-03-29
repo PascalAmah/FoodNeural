@@ -8,31 +8,31 @@ const Features = () => {
       name: "🌱 AI-Powered Food Analysis",
       description:
         "Instantly evaluate the environmental impact of any food item using machine learning and sustainability data.",
-      image: "/api/placeholder/300/300",
+      image: "/feature_1.PNG",
     },
     {
       name: "📊 Carbon Footprint Tracking",
       description:
         "Get insights into the CO₂ emissions associated with food production, helping you make greener choices.",
-      image: "/api/placeholder/300/300",
+      image: "/feature_2.PNG",
     },
     {
       name: "💧 Water Usage Assessment",
       description:
         "Understand how much water is required to produce different foods and discover more sustainable alternatives.",
-      image: "/api/placeholder/300/300",
+      image: "/feature_3.PNG",
     },
     {
       name: "🌍 Sustainability Score",
       description:
         "Receive a comprehensive sustainability rating based on multiple environmental factors.",
-      image: "/api/placeholder/300/300",
+      image: "/feature_4.PNG",
     },
     {
       name: "🔄 Alternative Suggestions",
       description:
         "Get recommendations for lower-impact food choices without compromising nutrition or taste.",
-      image: "/api/placeholder/300/300",
+      image: "/feature_5.PNG",
     },
   ];
 

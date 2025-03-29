@@ -22,7 +22,7 @@ const About = () => {
             data-aos-delay="200"
           >
             <img
-              src="/api/placeholder/500/400"
+              src="/about_img.PNG"
               alt="Food Impact Analysis"
               className="rounded-lg shadow-lg w-full h-auto"
               loading="lazy"
