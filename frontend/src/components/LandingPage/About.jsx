@@ -2,8 +2,11 @@ import React from "react";
 
 const About = () => {
   return (
-    <section className="py-8 sm:py-12 md:py-16 bg-white" data-aos="fade-up">
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
+    <section
+      className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-white"
+      data-aos="fade-up"
+    >
+      <div className="container mx-auto max-w-7xl">
         <h2
           className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-6 sm:mb-8 text-center"
           data-aos="fade-down"

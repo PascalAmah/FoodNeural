@@ -14,8 +14,11 @@ const TeamSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50" data-aos="fade-up">
-      <div className="container mx-auto px-4 text-center">
+    <section
+      className="py-16 px-4 sm:px-8 md:px-16 bg-gray-50"
+      data-aos="fade-up"
+    >
+      <div className="container mx-auto text-center">
         <h2
           className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-12"
           data-aos="fade-down"
