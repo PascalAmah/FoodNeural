@@ -1,17 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import AOS from "aos";
 
 const Hero = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-      easing: "ease-out",
-    });
-  }, []);
 
   return (
     <div
@@ -26,7 +17,7 @@ const Hero = () => {
             {/* Text Content */}
             <div className="w-full px-4 sm:px-6 md:px-8">
               <h1
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-gray-800 pt-6 lg:pt-10 font-primary"
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-gray-800 pt-6 lg:pt-10 font-primary leading-tight"
                 data-aos="fade-down"
                 data-aos-delay="100"
               >

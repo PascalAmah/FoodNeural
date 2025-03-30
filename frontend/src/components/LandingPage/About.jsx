@@ -3,7 +3,8 @@ import React from "react";
 const About = () => {
   return (
     <section
-      className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-white"
+      id="about"
+      className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-white overfow-x-hidden"
       data-aos="fade-up"
     >
       <div className="container mx-auto max-w-7xl">
@@ -15,7 +16,7 @@ const About = () => {
           About
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
           <div
             className="order-2 md:order-1"
             data-aos="fade-right"

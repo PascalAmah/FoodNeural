@@ -1,141 +1,136 @@
-from flask import Blueprint, jsonify, request
+from fastapi import APIRouter, Query, HTTPException, Depends
+from typing import Dict, List, Optional
 from app.services.food_data_service import FoodDataService
 from app.services.recommendation_service import RecommendationService
 from app.services.ai_recommendation_service import AIRecommendationService
-from typing import Dict
 import logging
 
 # Configure logger
 logger = logging.getLogger(__name__)
 
-# Initialize blueprint and services
-api_bp = Blueprint('api', __name__, url_prefix='/api')
+# Initialize router and services
+router = APIRouter(prefix="/api")
 food_service = FoodDataService()
 recommendation_service = RecommendationService()
 ai_recommendation_service = AIRecommendationService()
 
-def _get_impact_preferences() -> Dict[str, float]:
-    """Get impact preference weights from request parameters"""
+
+def get_impact_preferences(
+    carbon_weight: float = Query(0.3),
+    water_weight: float = Query(0.2),
+    energy_weight: float = Query(0.1),
+    waste_weight: float = Query(0.1),
+    deforestation_weight: float = Query(0.3),
+) -> Dict[str, float]:
+    """Get impact preference weights from query parameters."""
     return {
-        'carbon': float(request.args.get('carbon_weight', 0.3)),
-        'water': float(request.args.get('water_weight', 0.2)),
-        'energy': float(request.args.get('energy_weight', 0.1)),
-        'waste': float(request.args.get('waste_weight', 0.1)),
-        'deforestation': float(request.args.get('deforestation_weight', 0.3))
+        "carbon": carbon_weight,
+        "water": water_weight,
+        "energy": energy_weight,
+        "waste": waste_weight,
+        "deforestation": deforestation_weight,
     }
 
-@api_bp.route("/", methods=["GET"])
-def home():
-    """Root API endpoint"""
-    return jsonify({"message": "API is running!"}), 200
 
-@api_bp.route('/impact/<food_name>', methods=['GET'])
-def get_food_impact(food_name):
-    """Get environmental impact data for a food item"""
+@router.get("/")
+async def home():
+    """Root API endpoint."""
+    return {"message": "API is running!"}
+
+
+@router.get("/impact/{food_name}")
+async def get_food_impact(food_name: str):
+    """Get environmental impact data for a food item."""
     impact_data = food_service.get_food_impact(food_name)
     if not impact_data:
-        return jsonify({'error': f'Food item "{food_name}" not found'}), 404
-    return jsonify(impact_data)
+        raise HTTPException(status_code=404, detail=f'Food item "{food_name}" not found')
+    return impact_data
 
-@api_bp.route('/recommendations/<food_name>', methods=['GET'])
-def get_recommendations(food_name):
-    """Get food recommendations with AI and fallback to ML"""
+
+@router.get("/recommendations/{food_name}")
+async def get_recommendations(
+    food_name: str,
+    use_ai: bool = Query(True),
+    limit: int = Query(3),
+    preferences: Dict[str, float] = Depends(get_impact_preferences),
+):
+    """Get food recommendations with AI and fallback to ML."""
     try:
-        use_ai = request.args.get('use_ai', 'true').lower() == 'true'
-        limit = int(request.args.get('limit', 3))
-        preferences = _get_impact_preferences()
-
         logger.info(f"Getting recommendations for {food_name} (AI: {use_ai})")
 
         # Get food impact data first
         impact_data = food_service.get_food_impact(food_name)
         if not impact_data:
             logger.warning(f"Food item not found: {food_name}")
-            return jsonify({'error': f'Food item "{food_name}" not found'}), 404
+            raise HTTPException(status_code=404, detail=f'Food item "{food_name}" not found')
 
         recommendations = None
         source = "ml"  # Default to ML recommendations
 
-        # Try Gemini recommendations first if requested
+        # Try AI recommendations first if requested
         if use_ai:
             try:
                 recommendations = ai_recommendation_service.get_ai_recommendations(
-                    food_name,
-                    impact_data,
-                    limit
+                    food_name, impact_data, limit
                 )
-                if recommendations and recommendations.get('alternatives'):
+                if recommendations and recommendations.get("alternatives"):
                     source = "ai"
                     logger.info(f"Using AI recommendations for {food_name}")
-                    return jsonify({
-                        'food': food_name,
-                        'source': source,
-                        'alternatives': recommendations['alternatives']
-                    })
+                    return {
+                        "food": food_name,
+                        "source": source,
+                        "alternatives": recommendations["alternatives"],
+                    }
             except Exception as e:
                 logger.error(f"AI recommendation failed: {e}")
                 # Continue to ML recommendations instead of returning empty response
 
         # Use ML recommendations
         ml_recommendations = recommendation_service.get_recommendations(
-            food_name,
-            impact_preferences=preferences,
-            limit=limit
+            food_name, impact_preferences=preferences, limit=limit
         )
-        
-        if not ml_recommendations:
-            return jsonify({'error': 'No recommendations available'}), 404
 
-        return jsonify({
-            'food': food_name,
-            'source': source,
-            'preferences': preferences,
-            'alternatives': ml_recommendations
-        })
+        if not ml_recommendations:
+            raise HTTPException(status_code=404, detail="No recommendations available")
+
+        return {
+            "food": food_name,
+            "source": source,
+            "preferences": preferences,
+            "alternatives": ml_recommendations,
+        }
 
     except ValueError as e:
-        return jsonify({
-            'error': 'Invalid parameter value',
-            'details': str(e)
-        }), 400
+        raise HTTPException(status_code=400, detail=f"Invalid parameter value: {e}")
     except Exception as e:
         logger.error(f"Recommendation error: {e}")
-        return jsonify({
-            'error': 'Internal server error',
-            'details': str(e)
-        }), 500
+        raise HTTPException(status_code=500, detail="Internal server error")
 
-@api_bp.route('/search', methods=['GET'])
-def search_foods():
-    """Search for food items"""
-    query = request.args.get('q', '').lower()
-    if not query:
-        return jsonify([])
-        
-    # Get all foods and filter by query
-    all_foods = food_service.get_all_foods()
-    matches = [food for food in all_foods if query in food.lower()]
-    return jsonify(matches)
 
-# @api_bp.route('/compare', methods=['GET'])
-# def compare_foods():
-#     """Compare environmental impact of two foods"""
-#     food1 = request.args.get('food1')
-#     food2 = request.args.get('food2')
-    
+# @router.get("/compare")
+# async def compare_foods(
+#     food1: str = Query(..., description="First food item to compare"),
+#     food2: str = Query(..., description="Second food item to compare"),
+# ):
+#     """
+#     Compare environmental impact of two foods.
+#     """
 #     if not food1 or not food2:
-#         return jsonify({'error': 'Please provide both food items'}), 400
-        
+#         raise HTTPException(status_code=400, detail="Please provide both food items")
+
 #     comparison = recommendation_service.get_impact_comparison(food1, food2)
 #     if not comparison:
-#         return jsonify({'error': 'One or both foods not found'}), 404
-        
-#     return jsonify(comparison)
+#         raise HTTPException(status_code=404, detail="One or both foods not found")
 
-@api_bp.errorhandler(Exception)
-def handle_error(error):
-    """Global error handler for API routes"""
-    return jsonify({
-        'error': str(error),
-        'type': error.__class__.__name__
-    }), 500
+#     return comparison
+
+
+@router.get("/search")
+async def search_foods(q: str = Query("")):
+    """Search for food items."""
+    if not q:
+        return []
+    # Get all foods and filter by query
+    all_foods = food_service.get_all_foods()
+    matches = [food for food in all_foods if q.lower() in food.lower()]
+    return matches

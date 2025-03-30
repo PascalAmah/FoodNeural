@@ -33,6 +33,7 @@ const Workflow = () => {
 
   return (
     <section
+      id="workflow"
       className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16"
       style={{ backgroundColor: "rgba(102, 187, 106, 0.05)" }}
       data-aos="fade-up"
