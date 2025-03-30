@@ -1,15 +1,14 @@
-// TeamSection.jsx
 import React from "react";
 
-const TeamSection = () => {
+const Team = () => {
   const teamMembers = [
     {
       name: "Pascal Amaliri",
-      role: "Full Stack Developer",
-      avatar: "/pascal-avatar.jpg", // Add your avatar image to public folder
+      role: "Software Developer",
+      avatar: "/pascal-avatar.jpg",
       github: "https://github.com/PascalAmah",
       linkedin: "https://linkedin.com/in/pascalamaliri",
-      twitter: "https://twitter.com/PascalAmah",
+      twitter: "https://twitter.com/chisax_",
     },
   ];
 
@@ -20,7 +19,7 @@ const TeamSection = () => {
     >
       <div className="container mx-auto text-center">
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-12"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-12 font-primary"
           data-aos="fade-down"
           data-aos-delay="100"
         >
@@ -49,10 +48,12 @@ const TeamSection = () => {
                   />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-1">
+              <h3 className="text-xl font-semibold text-gray-800 mb-1 font-primary">
                 {member.name}
               </h3>
-              <p className="text-sm text-gray-600 mb-4">{member.role}</p>
+              <p className="text-sm text-gray-600 mb-4 font-secondary">
+                {member.role}
+              </p>
               <div className="flex justify-center gap-4">
                 <a
                   href={member.github}
@@ -114,4 +115,4 @@ const TeamSection = () => {
   );
 };
 
-export default TeamSection;
+export default Team;

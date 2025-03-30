@@ -73,12 +73,18 @@ const Hero = () => {
               data-aos-delay="400"
             >
               <div className="relative w-full max-w-5xl mx-auto">
-                <img
-                  src="/insights.png"
-                  alt="FoodNeural Dashboard"
-                  className="w-full h-auto shadow-2xl rounded-xl transition-transform duration-300 hover:scale-105"
-                  loading="lazy"
-                />
+                <picture>
+                  <source
+                    srcSet="/insights_mobile.png"
+                    media="(max-width: 640px)"
+                  />
+                  <img
+                    src="/insights.png"
+                    alt="FoodNeural Dashboard"
+                    className="w-full h-auto transition-transform duration-300 hover:scale-105"
+                    loading="lazy"
+                  />
+                </picture>
               </div>
             </div>
           </div>

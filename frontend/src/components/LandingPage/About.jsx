@@ -8,7 +8,7 @@ const About = () => {
     >
       <div className="container mx-auto max-w-7xl">
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-6 sm:mb-8 text-center"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-600 mb-6 sm:mb-8 text-center font-primary"
           data-aos="fade-down"
           data-aos-delay="100"
         >
@@ -34,12 +34,12 @@ const About = () => {
             data-aos="fade-left"
             data-aos-delay="300"
           >
-            <p className="text-base sm:text-lg text-gray-700">
+            <p className="text-base sm:text-lg text-gray-700 font-secondary">
               Food choices impact the planet more than we realize. From carbon
               emissions to water consumption, every meal contributes to our
               environmental footprint.
             </p>
-            <p className="text-base sm:text-lg text-gray-700">
+            <p className="text-base sm:text-lg text-gray-700 font-secondary">
               FoodNeural helps you understand and reduce that impact using
               AI-powered analysis. By evaluating the sustainability of different
               foods, we empower individuals and businesses to make smarter,
@@ -47,27 +47,27 @@ const About = () => {
             </p>
 
             <div className="bg-green-50 p-4 sm:p-6 rounded-lg border border-green-100">
-              <h3 className="text-lg sm:text-xl font-semibold text-green-700 mb-2 sm:mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-green-700 mb-2 sm:mb-3 font-primary">
                 🌍 Our Mission
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-gray-700 font-secondary">
                 To provide data-driven insights that promote sustainable eating
                 and help reduce the environmental impact of food production.
               </p>
             </div>
 
             <div className="bg-green-50 p-4 sm:p-6 rounded-lg border border-green-100">
-              <h3 className="text-lg sm:text-xl font-semibold text-green-700 mb-2 sm:mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-green-700 mb-2 sm:mb-3 font-primary">
                 💡 How We Do It
               </h3>
-              <p className="text-sm sm:text-base text-gray-700">
+              <p className="text-sm sm:text-base text-gray-700 font-secondary">
                 Using machine learning and scientific food databases, we analyze
                 the environmental footprint of ingredients, providing users with
                 sustainability scores and eco-friendly alternatives.
               </p>
             </div>
 
-            <p className="text-base sm:text-lg font-medium text-green-600">
+            <p className="text-base sm:text-lg font-medium text-green-600 font-secondary">
               Join us in building a more sustainable future, one meal at a time!
               🌱✨
             </p>

@@ -39,14 +39,14 @@ const Workflow = () => {
     >
       <div className="container mx-auto max-w-7xl">
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4 font-primary"
           data-aos="fade-down"
           data-aos-delay="100"
         >
           Workflow
         </h2>
         <p
-          className="text-sm sm:text-base md:text-lg text-center text-gray-700 max-w-3xl mx-auto mb-8 sm:mb-12"
+          className="text-sm sm:text-base md:text-lg text-center text-gray-700 max-w-3xl mx-auto mb-8 sm:mb-12 font-secondary"
           data-aos="fade-up"
           data-aos-delay="200"
         >
@@ -76,10 +76,10 @@ const Workflow = () => {
                     {step.icon}
                   </span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 sm:mb-3 font-primary">
                   {step.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 font-secondary">
                   {step.description}
                 </p>
               </div>

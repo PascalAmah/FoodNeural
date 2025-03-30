@@ -41,15 +41,17 @@ const Features = () => {
       className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-gray-50"
       data-aos="fade-up"
     >
-      <div className="container mx-auto max-w-7xl">
+      <div className="container mx-auto max-w-6xl">
+        {" "}
         <h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-green-600 mb-8 sm:mb-12"
+          className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-green-600 mb-8 sm:mb-12 font-primary"
           data-aos="fade-down"
           data-aos-delay="100"
         >
           Our Features
         </h2>
-        <div className="flex flex-col space-y-6 sm:space-y-8">
+        <div className="flex flex-col space-y-6">
+          {" "}
           {features.map((feature, index) => (
             <Motion.div
               key={index}
@@ -61,7 +63,7 @@ const Features = () => {
               <Card className="overflow-hidden hover:shadow-xl">
                 <div className="grid md:grid-cols-2 gap-0">
                   <div
-                    className={`h-48 sm:h-64 md:h-full ${
+                    className={`h-40 sm:h-48 md:h-56 ${
                       index % 2 === 1 ? "md:order-2" : ""
                     }`}
                   >
@@ -72,12 +74,13 @@ const Features = () => {
                       loading="lazy"
                     />
                   </div>
-                  <CardContent className="flex items-center p-6 sm:p-8 md:p-12">
+                  <CardContent className="flex items-center p-4 sm:p-6 md:p-8">
+                    {" "}
                     <div>
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-semibold mb-3 sm:mb-4">
+                      <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-gray-800 font-primary">
                         {feature.name}
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600">
+                      <p className="text-sm sm:text-base text-gray-600 font-secondary">
                         {feature.description}
                       </p>
                     </div>
