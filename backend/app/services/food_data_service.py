@@ -2,6 +2,7 @@ import requests
 import random
 import json
 import os
+import logging
 from app.models.food_model import FoodImpactModel
 from app.config import Config
 
@@ -25,23 +26,59 @@ class FoodDataService:
     
     def get_food_impact(self, food_name, description=None):
         """Get impact data for a food item"""
-        cache_key = food_name.lower()
-        if cache_key in self.impact_cache:
-            return self.impact_cache[cache_key]
-        
-        impact_data = None
-        # Try each data source in sequence
-        for fetch_func in [
-            lambda: self.model.get_food_impact(food_name, description),
-            lambda: self.fetch_from_open_food_facts(food_name),
-            lambda: self.fetch_from_usda(food_name)
-        ]:
-            impact_data = fetch_func()
-            if impact_data:
-                self.impact_cache[cache_key] = impact_data
-                return impact_data
-        
-        return None
+        try:
+            cache_key = food_name.lower()
+            if cache_key in self.impact_cache:
+                return self._format_impact_data(self.impact_cache[cache_key])
+
+            # Try each data source in sequence
+            for fetch_func in [
+                lambda: self.model.get_food_impact(food_name, description),
+                lambda: self.fetch_from_open_food_facts(food_name),
+                lambda: self.fetch_from_usda(food_name)
+            ]:
+                impact_data = fetch_func()
+                if impact_data:
+                    formatted_data = self._format_impact_data(impact_data)
+                    self.impact_cache[cache_key] = formatted_data
+                    return formatted_data
+
+            return None
+        except Exception as e:
+            logging.error(f"Error getting food impact: {e}")
+            return None
+
+    def _format_impact_data(self, data):
+        """Format impact data to ensure consistent structure"""
+        try:
+            # If data already has breakdown structure
+            if "breakdown" in data:
+                return data
+
+            # Convert flat structure to breakdown structure
+            return {
+                "food": data.get("food", "Unknown"),
+                "score": data.get("environmental_score", 5),
+                "breakdown": {
+                    "carbon": data.get("carbon", 0),
+                    "water": data.get("water", 0),
+                    "energy": data.get("energy", 0),
+                    "waste": data.get("waste", 0),
+                    "deforestation": data.get("deforestation", 0)
+                },
+                "ingredients": data.get("ingredients", []),
+                "certifications": data.get("certifications", []),
+                "nutrition": data.get("nutrition", {
+                    "protein": 0,
+                    "fat": 0,
+                    "carbs": 0,
+                    "fiber": 0
+                }),
+                "impact": data.get("impact", "Medium")
+            }
+        except Exception as e:
+            logging.error(f"Error formatting impact data: {e}")
+            return None
     
     def fetch_from_open_food_facts(self, food_name):
         """Fetch data from Open Food Facts API"""
@@ -61,7 +98,7 @@ class FoodDataService:
                     # Extract real values where possible, fallback to estimates
                     return {
                         "food": product.get("product_name", food_name),
-                        "score": self._calculate_environmental_score(product),
+                        "score": self.calculate_environmental_score(product, source='off'),
                         "breakdown": {
                             "carbon": float(product.get("carbon-footprint_100g", 0)) or random.uniform(0.1, 2.0),
                             "water": float(product.get("water-footprint_100g", 0)) or random.uniform(50, 500),
@@ -105,7 +142,7 @@ class FoodDataService:
                     
                     return {
                         "food": food.get("description", food_name),
-                        "score": self._calculate_environmental_score_usda(food),
+                        "score": self.calculate_environmental_score(food, source='usda'),
                         "breakdown": {
                             "carbon": random.uniform(0.1, 2.5),
                             "water": random.uniform(100, 500),
@@ -142,6 +179,7 @@ class FoodDataService:
                     deforestation_risk = self._calculate_deforestation_risk(product)
                     return {
                         "food": product.get("product_name", "Unknown"),
+                        "score": self.calculate_environmental_score(product, source='off'),
                         "carbon": product.get("carbon-footprint_100g", random.uniform(0.1, 2.0)),
                         "water": random.uniform(50, 500),
                         "energy": product.get("energy_100g", random.uniform(0.5, 3.0)) / 100,
@@ -246,33 +284,96 @@ class FoodDataService:
             print(f"Error getting all foods: {e}")
             return self.foods
 
-    def _calculate_environmental_score(self, product):
-        """Calculate environmental score from Open Food Facts data"""
-        score = 0
-        if product.get("ecoscore_grade"):
-            # Convert A-E grade to numeric score
-            grade_scores = {"a": 9, "b": 7, "c": 5, "d": 3, "e": 1}
-            score = grade_scores.get(product["ecoscore_grade"].lower(), 5)
-        return score
+    def calculate_environmental_score(self, food_data, source='default'):
+        """
+        Calculate environmental score for food data from any source
+        Args:
+            food_data: Dictionary containing food information
+            source: Source of the data ('off' for Open Food Facts, 'usda' for USDA, or 'default')
+        Returns:
+            Float between 0-10 representing environmental impact score
+        """
+        try:
+            # Start with neutral score
+            score = 5.0
+            food_name = (
+                food_data.get('product_name', '') or 
+                food_data.get('description', '') or 
+                food_data.get('food', '')
+            ).lower()
 
-    def _calculate_environmental_score_usda(self, food_data):
-        """Calculate environmental score from USDA data"""
-        # Base score starts at 5 (neutral)
-        score = 5.0
-        
-        # Adjust score based on food category
-        description = food_data.get('description', '').lower()
-        
-        # Higher impact foods
-        if any(term in description for term in ['beef', 'lamb', 'pork']):
-            score -= 2
-        elif any(term in description for term in ['chicken', 'turkey', 'fish']):
-            score -= 1
-        # Lower impact foods
-        elif any(term in description for term in ['vegetable', 'fruit', 'grain', 'legume']):
-            score += 2
-        elif any(term in description for term in ['nut', 'seed']):
-            score += 1
-            
-        # Ensure score stays within 0-10 range
-        return max(0, min(10, score))
+            # Check for OpenFoodFacts ecoscore first
+            if source == 'off' and food_data.get("ecoscore_grade"):
+                grade_scores = {"a": 9, "b": 7, "c": 5, "d": 3, "e": 1}
+                return grade_scores.get(food_data["ecoscore_grade"].lower(), 5)
+
+            # Calculate score based on food category and characteristics
+            impact_factors = {
+                'high_impact': {
+                    'terms': ['beef', 'lamb', 'pork', 'meat', 'butter'],
+                    'adjustment': -2.5
+                },
+                'medium_high_impact': {
+                    'terms': ['chicken', 'turkey', 'fish', 'cheese', 'cream'],
+                    'adjustment': -1.5
+                },
+                'medium_impact': {
+                    'terms': ['milk', 'yogurt', 'eggs', 'shrimp'],
+                    'adjustment': -1.0
+                },
+                'low_impact': {
+                    'terms': ['vegetable', 'fruit', 'grain', 'legume', 'bean', 'lentil'],
+                    'adjustment': +2.0
+                },
+                'very_low_impact': {
+                    'terms': ['nut', 'seed', 'leafy green'],
+                    'adjustment': +2.5
+                }
+            }
+
+            # Apply category-based adjustments
+            for impact_level, data in impact_factors.items():
+                if any(term in food_name for term in data['terms']):
+                    score += data['adjustment']
+                    break
+
+            # Additional adjustments based on characteristics
+            adjustments = [
+                # Processing level
+                (-0.5 if 'processed' in food_name else 0),
+                (-0.5 if 'frozen' in food_name else 0),
+                (+0.5 if 'fresh' in food_name else 0),
+                
+                # Certifications (if available)
+                (+1.0 if any(cert in str(food_data.get('labels', '')).lower() 
+                            for cert in ['organic', 'bio', 'eco']) else 0),
+                
+                # Origin (if available)
+                (+0.5 if any(term in str(food_data.get('origins', '')).lower() 
+                            for term in ['local', 'domestic']) else 0),
+                
+                # Packaging (if available)
+                (-0.5 if any(term in str(food_data.get('packaging', '')).lower() 
+                            for term in ['plastic', 'disposable']) else 0),
+                
+                # Nutrition factors
+                (+0.5 if food_data.get('nutrition', {}).get('fiber', 0) > 3 else 0),
+                (-0.5 if food_data.get('nutrition', {}).get('fat', 0) > 20 else 0)
+            ]
+
+            score += sum(adjustments)
+
+            # Consider environmental metrics if available
+            env_metrics = food_data.get('breakdown', {})
+            if env_metrics:
+                carbon_impact = -0.5 if env_metrics.get('carbon', 0) > 5 else 0
+                water_impact = -0.5 if env_metrics.get('water', 0) > 1000 else 0
+                deforest_impact = -1.0 if env_metrics.get('deforestation', 0) > 5 else 0
+                score += carbon_impact + water_impact + deforest_impact
+
+            # Ensure score stays within 0-10 range and round to 1 decimal
+            return round(max(0, min(10, score)), 1)
+
+        except Exception as e:
+            logging.error(f"Error calculating environmental score: {e}")
+            return 5.0  # Return neutral score on error

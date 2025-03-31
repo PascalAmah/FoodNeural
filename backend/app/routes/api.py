@@ -51,59 +51,56 @@ async def get_food_impact(food_name: str):
 async def get_recommendations(
     food_name: str,
     use_ai: bool = Query(True),
-    limit: int = Query(3),
+    limit: int = Query(3, ge=1, le=5),
     preferences: Dict[str, float] = Depends(get_impact_preferences),
 ):
     """Get food recommendations with AI and fallback to ML."""
     try:
-        logger.info(f"Getting recommendations for {food_name} (AI: {use_ai})")
-
-        # Get food impact data first
+        # Get food impact data
         impact_data = food_service.get_food_impact(food_name)
         if not impact_data:
-            logger.warning(f"Food item not found: {food_name}")
-            raise HTTPException(status_code=404, detail=f'Food item "{food_name}" not found')
+            raise HTTPException(
+                status_code=404, 
+                detail=f'Food item "{food_name}" not found'
+            )
 
-        recommendations = None
-        source = "ml"  # Default to ML recommendations
-
-        # Try AI recommendations first if requested
+        # Try AI recommendations if requested
         if use_ai:
             try:
-                recommendations = ai_recommendation_service.get_ai_recommendations(
+                logger.info(f"Attempting AI recommendations for {food_name}")
+                ai_result = ai_recommendation_service.get_ai_recommendations(
                     food_name, impact_data, limit
                 )
-                if recommendations and recommendations.get("alternatives"):
-                    source = "ai"
-                    logger.info(f"Using AI recommendations for {food_name}")
+                if ai_result and ai_result.get("alternatives"):
+                    logger.info(f"Successfully generated AI recommendations for {food_name}")
                     return {
-                        "food": food_name,
-                        "source": source,
-                        "alternatives": recommendations["alternatives"],
+                        "source": "ai",
+                        "alternatives": ai_result["alternatives"]
                     }
+                logger.warning(f"No AI recommendations generated for {food_name}")
             except Exception as e:
-                logger.error(f"AI recommendation failed: {e}")
-                # Continue to ML recommendations instead of returning empty response
+                logger.error(f"AI recommendation failed: {e}", exc_info=True)
 
-        # Use ML recommendations
-        ml_recommendations = recommendation_service.get_recommendations(
-            food_name, impact_preferences=preferences, limit=limit
+        # Fallback to ML recommendations
+        logger.info(f"Using ML recommendations for {food_name}")
+        ml_result = recommendation_service.get_recommendations(
+            food_name, 
+            impact_preferences=preferences, 
+            limit=limit
         )
-
-        if not ml_recommendations:
-            raise HTTPException(status_code=404, detail="No recommendations available")
+        if not ml_result:
+            raise HTTPException(
+                status_code=404, 
+                detail="No recommendations available"
+            )
 
         return {
-            "food": food_name,
-            "source": source,
-            "preferences": preferences,
-            "alternatives": ml_recommendations,
+            "source": "ml",
+            "alternatives": ml_result
         }
 
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"Invalid parameter value: {e}")
     except Exception as e:
-        logger.error(f"Recommendation error: {e}")
+        logger.error(f"Recommendation error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error")
 
 

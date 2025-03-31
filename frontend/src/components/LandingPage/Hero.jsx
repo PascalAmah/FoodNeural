@@ -41,7 +41,7 @@ const Hero = () => {
               >
                 <button
                   onClick={() => navigate("/analyzer")}
-                  className="w-full sm:w-auto px-6 py-3 sm:py-4 bg-green-500 hover:bg-green-600 
+                  className="w-full sm:w-auto px-8 py-4 sm:py-4 bg-green-500 hover:bg-green-600 
                   rounded-[14px] text-base sm:text-medium font-semibold text-white 
                   transition-all duration-300 hover:scale-105 active:scale-95 font-primary"
                 >
@@ -49,7 +49,7 @@ const Hero = () => {
                 </button>
                 <button
                   className="w-full sm:w-auto border text-gray-700 
-                  hover:bg-gray-150 font-bold py-3 sm:py-4 px-6 rounded-[14px] 
+                  hover:bg-gray-150 font-bold py-4 sm:py-4 px-8 rounded-[14px] 
                   transition-all duration-300 hover:scale-105 active:scale-95 font-primary"
                 >
                   Learn More

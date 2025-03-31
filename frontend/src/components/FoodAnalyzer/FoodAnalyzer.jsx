@@ -39,12 +39,18 @@ const FoodAnalyzer = () => {
         getRecommendations(value),
       ]);
 
-      // Validate impact data structure
+      console.log("Raw impact data:", impactResult);
+
+      // Validate and normalize impact data
       if (!impactResult || !validateImpactData(impactResult)) {
         throw new Error("Invalid impact data format");
       }
 
-      setImpactData(impactResult);
+      // Normalize the data structure
+      const normalizedImpactData = normalizeImpactData(impactResult);
+      console.log("Normalized impact data:", normalizedImpactData);
+
+      setImpactData(normalizedImpactData);
       setRecommendations(recommendationsResult.alternatives || []);
     } catch (err) {
       console.error("Search error:", err);
@@ -70,20 +76,64 @@ const FoodAnalyzer = () => {
 
   const validateImpactData = (data) => {
     try {
+      // First check if data exists
+      if (!data || typeof data !== "object") return false;
+
+      // If data comes with breakdown structure
+      if (data.breakdown) {
+        return (
+          typeof data.food === "string" &&
+          data.breakdown &&
+          typeof data.breakdown.carbon === "number" &&
+          typeof data.breakdown.water === "number" &&
+          typeof data.breakdown.energy === "number" &&
+          typeof data.breakdown.waste === "number" &&
+          typeof data.breakdown.deforestation === "number"
+        );
+      }
+
+      // If data comes with flat structure
       return (
-        data &&
-        typeof data === "object" &&
         typeof data.food === "string" &&
         typeof data.carbon === "number" &&
         typeof data.water === "number" &&
         typeof data.energy === "number" &&
         typeof data.waste === "number" &&
-        typeof data.deforestation === "number" &&
-        typeof data.impact === "string"
+        typeof data.deforestation === "number"
       );
     } catch {
       return false;
     }
+  };
+
+  // Add this function to normalize the data structure
+  const normalizeImpactData = (data) => {
+    if (!data) return null;
+
+    // If data already has breakdown structure, return as is
+    if (data.breakdown) return data;
+
+    // Convert flat structure to breakdown structure
+    return {
+      food: data.food,
+      score: data.environmental_score || 5,
+      breakdown: {
+        carbon: data.carbon,
+        water: data.water,
+        energy: data.energy,
+        waste: data.waste,
+        deforestation: data.deforestation,
+      },
+      impact: data.impact,
+      ingredients: [],
+      certifications: [],
+      nutrition: {
+        protein: 0,
+        fat: 0,
+        carbs: 0,
+        fiber: 0,
+      },
+    };
   };
 
   const handleSearch = () => handleSearchWithValue(query);
@@ -148,7 +198,7 @@ const FoodAnalyzer = () => {
   };
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-6xl font-montserrat">
       <Motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -167,7 +217,7 @@ const FoodAnalyzer = () => {
                   type="text"
                   ref={inputRef}
                   className="w-full p-3 pr-10 rounded-lg border border-gray-300 focus:border-green-500 
-                    focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200"
+                    focus:ring-2 focus:ring-green-200 outline-none transition-all duration-200 font-montserrat"
                   placeholder="Enter food name (e.g., Almond Milk, Beef)"
                   value={query}
                   onChange={handleInputChange}

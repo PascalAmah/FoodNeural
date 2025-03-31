@@ -14,40 +14,41 @@ import { motion as Motion } from "framer-motion";
 import { GiWaterDrop } from "react-icons/gi";
 
 const ImpactChart = ({ impactData }) => {
-  if (!impactData) return null;
+  console.log("ImpactChart impactData:", impactData);
+
+  // Destructure breakdown and provide fallback values
+  const { breakdown } = impactData || {};
+  const carbon = breakdown?.carbon || 0;
+  const water = breakdown?.water || 0;
+  const energy = breakdown?.energy || 0;
+  const waste = breakdown?.waste || 0;
+  const deforestation = breakdown?.deforestation || 0;
 
   // Data for bar chart (excluding water)
   const barData = [
     {
       name: "Carbon (kg CO₂)",
-      value: impactData.carbon,
+      value: carbon,
     },
     {
       name: "Energy (kWh)",
-      value: impactData.energy,
+      value: energy,
     },
     {
       name: "Waste (kg)",
-      value: impactData.waste,
+      value: waste,
     },
     {
       name: "Deforestation (ha)",
-      value: impactData.deforestation || 0,
+      value: deforestation,
     },
   ];
 
   // Data for water (radial bar chart)
-  const waterData = [
-    { name: "Water (L)", value: impactData.water, fill: "#60a5fa" },
-  ];
+  const waterData = [{ name: "Water (L)", value: water, fill: "#60a5fa" }];
 
   // Data for pie chart (impact distribution, including water)
-  const totalImpact =
-    impactData.carbon +
-    impactData.water +
-    impactData.energy +
-    impactData.waste +
-    (impactData.deforestation || 0);
+  const totalImpact = carbon + water + energy + waste + deforestation;
 
   const COLORS = {
     Carbon: "#ff6b6b", // Red for high impact
@@ -60,36 +61,33 @@ const ImpactChart = ({ impactData }) => {
   const pieData = [
     {
       name: "Carbon",
-      value: totalImpact > 0 ? (impactData.carbon / totalImpact) * 100 : 0,
+      value: totalImpact > 0 ? (carbon / totalImpact) * 100 : 0,
       color: COLORS.Carbon,
     },
     {
       name: "Water",
-      value: totalImpact > 0 ? (impactData.water / totalImpact) * 100 : 0,
+      value: totalImpact > 0 ? (water / totalImpact) * 100 : 0,
       color: COLORS.Water,
     },
     {
       name: "Energy",
-      value: totalImpact > 0 ? (impactData.energy / totalImpact) * 100 : 0,
+      value: totalImpact > 0 ? (energy / totalImpact) * 100 : 0,
       color: COLORS.Energy,
     },
     {
       name: "Waste",
-      value: totalImpact > 0 ? (impactData.waste / totalImpact) * 100 : 0,
+      value: totalImpact > 0 ? (waste / totalImpact) * 100 : 0,
       color: COLORS.Waste,
     },
     {
       name: "Deforestation",
-      value:
-        totalImpact > 0
-          ? ((impactData.deforestation || 0) / totalImpact) * 100
-          : 0,
+      value: totalImpact > 0 ? (deforestation / totalImpact) * 100 : 0,
       color: COLORS.Deforestation,
     },
   ];
 
   const getBarColor = () => {
-    switch (impactData.impact) {
+    switch (impactData?.impact) {
       case "High":
         return "#ff6b6b";
       case "Medium":
@@ -97,9 +95,18 @@ const ImpactChart = ({ impactData }) => {
       case "Low":
         return "#1dd1a1";
       default:
-        return "#82ca9d";
+        return "#82ca9d"; // Default color for unknown impact levels
     }
   };
+
+  const calculateImpactLevel = (score) => {
+    if (score >= 7) return "High";
+    if (score >= 4) return "Medium";
+    return "Low";
+  };
+
+  const impactLevel =
+    impactData?.impact || calculateImpactLevel(impactData?.score || 0);
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -112,23 +119,31 @@ const ImpactChart = ({ impactData }) => {
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.5 }}
-      className="bg-white md:p-6 md:rounded-xl md:shadow-lg"
+      className="bg-white md:p-6 md:rounded-xl md:shadow-lg font-montserrat"
     >
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">
+      {/* Food name heading with Lora font */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-3 font-lora">
+        {impactData?.food || "Unknown Food"}
+      </h2>
+
+      <h3 className="text-xl font-semibold text-gray-800 mb-4 font-lora">
         Environmental Impact
       </h3>
+
       <div className="flex items-center gap-2 mb-6">
         <span className="text-gray-600">Impact Level:</span>
         <span
           className={`px-3 py-1 rounded-full text-sm font-medium text-white ${
-            impactData.impact === "High"
+            impactLevel === "High"
               ? "bg-red-500"
-              : impactData.impact === "Medium"
+              : impactLevel === "Medium"
               ? "bg-yellow-500"
-              : "bg-green-500"
+              : impactLevel === "Low"
+              ? "bg-green-500"
+              : "bg-gray-400"
           }`}
         >
-          {impactData.impact}
+          {impactLevel}
         </span>
       </div>
 
@@ -162,7 +177,7 @@ const ImpactChart = ({ impactData }) => {
             </RadialBarChart>
           </ResponsiveContainer>
           <div className="text-blue-600 font-medium text-lg">
-            {impactData.water.toLocaleString()} L
+            {water.toLocaleString()} L
           </div>
         </div>
       </div>

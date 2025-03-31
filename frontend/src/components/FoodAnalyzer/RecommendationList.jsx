@@ -24,9 +24,9 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
       initial="hidden"
       animate="visible"
       variants={listVariants}
-      className="bg-white md:p-6 md:rounded-xl md:shadow-lg"
+      className="bg-white md:p-6 md:rounded-xl md:shadow-lg font-montserrat"
     >
-      <h2 className="text-lg md:text-xl font-semibold mb-4">
+      <h2 className="text-lg md:text-xl font-semibold mb-4 font-lora">
         Sustainable Alternatives
       </h2>
       <ul className="space-y-4">
@@ -38,7 +38,7 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
               transition-colors duration-200"
             onClick={() => onSelectRecommendation(rec.name)}
           >
-            <h3 className="font-medium text-base md:text-lg text-green-800">
+            <h3 className="font-medium text-base md:text-lg text-green-800 font-lora">
               {rec.name}
             </h3>
             {rec.sustainability_improvement && (
@@ -53,14 +53,23 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
               <div className="mt-2 text-sm text-gray-500">
                 <p>
                   Water usage:{" "}
-                  {rec.impact.water
+                  {rec.impact.breakdown
+                    ? `${rec.impact.breakdown.water.toLocaleString()} L`
+                    : rec.impact.water
                     ? `${rec.impact.water.toLocaleString()} L`
                     : "N/A"}
                 </p>
                 <p>
                   Carbon footprint:{" "}
-                  {rec.impact.carbon ? `${rec.impact.carbon} kg CO₂` : "N/A"}
+                  {rec.impact.breakdown
+                    ? `${rec.impact.breakdown.carbon} kg CO₂`
+                    : rec.impact.carbon
+                    ? `${rec.impact.carbon} kg CO₂`
+                    : "N/A"}
                 </p>
+                {rec.impact.breakdown?.energy && (
+                  <p>Energy usage: {rec.impact.breakdown.energy} MJ</p>
+                )}
               </div>
             )}
           </Motion.li>

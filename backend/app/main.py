@@ -8,10 +8,15 @@ Config.validate_config()
 
 app = FastAPI(title="FoodNeural API", version="1.0.0")
 
+origins = [
+    "http://localhost:5173", 
+    "https://food-neural.vercel.app",
+]
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["localhost", "http://localhost:5173"], 
+    allow_origins=origins, 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

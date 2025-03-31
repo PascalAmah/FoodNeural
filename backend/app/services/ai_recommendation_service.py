@@ -5,7 +5,7 @@ from app.services.recommendation_service import RecommendationService
 
 class AIRecommendationService:
     def __init__(self):
-        """Initialize AI recommendation service with fallback handler"""
+        """Initialize AI recommendation service"""
         self.logger = logging.getLogger(__name__)
         self.api_key = Config.GEMINI_API_KEY
         if not self.api_key:
@@ -17,14 +17,19 @@ class AIRecommendationService:
     def get_ai_recommendations(self, food_name, impact_data, limit=3):
         """Get AI-powered recommendations with robust fallback"""
         try:
-            # Construct prompt
+            if not impact_data or not isinstance(impact_data, dict):
+                return {"alternatives": self.fallback_service._fallback_recommendations(food_name, limit)}
+
+            # Extract metrics from breakdown if present
+            metrics = impact_data.get('breakdown', impact_data)
+            
             prompt = (
                 f"I have a food item '{food_name}' with the following environmental impacts:\n"
-                f"- Carbon footprint: {impact_data['carbon']} kg CO2/kg\n"
-                f"- Water usage: {impact_data['water']} L/kg\n"
-                f"- Energy usage: {impact_data['energy']} MJ/kg\n"
-                f"- Waste: {impact_data['waste']} kg\n"
-                f"- Deforestation risk: {impact_data['deforestation']} (0-10 scale)\n\n"
+                f"- Carbon footprint: {metrics.get('carbon', 0)} kg CO2/kg\n"
+                f"- Water usage: {metrics.get('water', 0)} L/kg\n"
+                f"- Energy usage: {metrics.get('energy', 0)} MJ/kg\n"
+                f"- Waste: {metrics.get('waste', 0)} kg\n"
+                f"- Deforestation risk: {metrics.get('deforestation', 0)} (0-10 scale)\n\n"
                 f"Suggest {limit} sustainable alternative foods that reduce these impacts.\n"
                 f"Format: numbered list with 'Food Name - Brief explanation focusing on impact reductions'"
             )
@@ -65,7 +70,7 @@ class AIRecommendationService:
             self.logger.error(f"Gemini API error: {e.response.status_code} - {e.response.text}")
             return {"alternatives": self.fallback_service._fallback_recommendations(food_name, limit)}
         except Exception as e:
-            self.logger.error(f"Error with Gemini API: {e}")
+            self.logger.error(f"Error in AI recommendations: {e}")
             return {"alternatives": self.fallback_service._fallback_recommendations(food_name, limit)}
 
     def _parse_ai_response(self, result, limit):

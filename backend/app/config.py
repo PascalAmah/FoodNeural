@@ -7,7 +7,7 @@ load_dotenv()
 class Config:
     # API URLs
     USDA_API_URL = "https://api.nal.usda.gov/fdc/v1"
-    OPEN_FOOD_FACTS_URL = "https://world.openfoodfacts.org/api/v0/product/"
+    OPEN_FOOD_FACTS_URL = "https://world.openfoodfacts.org"
     FAO_DATA_URL = "https://www.fao.org/platforms/gleam/data/en/"
 
     # API Keys
