@@ -1,4 +1,6 @@
 # This file is used to install the required packages for the backend.
+flask==2.3.2
+flask-cors==4.0.0
 spacy==3.6.1
 numpy==1.24.3
 pandas==2.0.2
@@ -13,5 +15,3 @@ transformers>=4.30.0
 google-generativeai>=0.3.0
 tenacity==8.0.1
 gunicorn
-fastapi==0.95.2
-uvicorn==0.22.0
