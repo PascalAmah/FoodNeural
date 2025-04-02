@@ -1,12 +1,19 @@
 import axios from "axios";
 
-// Use a fixed base URL
-// eslint-disable-next-line no-undef
-const API_BASE_URL = `${process.env.VITE_API_URL}/api`;
+const API_BASE_URL = process.env.VITE_APP_URL || "http://localhost:5000";
+
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: `${API_BASE_URL}/api`,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 export const getFoodImpact = async (foodName) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/impact/${foodName}`);
+    const response = await api.get(`/impact/${encodeURIComponent(foodName)}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching food impact data:", error);
@@ -14,10 +21,21 @@ export const getFoodImpact = async (foodName) => {
   }
 };
 
-export const getRecommendations = async (foodName) => {
+export const getRecommendations = async (foodName, useAI = true, limit = 3) => {
   try {
-    const response = await axios.get(
-      `${API_BASE_URL}/recommendations/${foodName}`
+    const params = {
+      use_ai: useAI.toString(),
+      limit: limit.toString(),
+      carbon_weight: "0.3",
+      water_weight: "0.2",
+      energy_weight: "0.1",
+      waste_weight: "0.1",
+      deforestation_weight: "0.3",
+    };
+
+    const response = await api.get(
+      `/recommendations/${encodeURIComponent(foodName)}`,
+      { params }
     );
     return response.data;
   } catch (error) {
@@ -28,8 +46,10 @@ export const getRecommendations = async (foodName) => {
 
 export const searchFoods = async (query) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/search?q=${query}`);
-    return response.data;
+    const response = await api.get("/search", {
+      params: { q: query },
+    });
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error("Error searching foods:", error);
     return [];

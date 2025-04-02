@@ -1,6 +1,47 @@
 import React from "react";
 import { motion as Motion } from "framer-motion";
 
+const formatImpactValue = (value, unit) => {
+  // Convert string values to numbers if possible
+  const numValue = typeof value === "string" ? parseFloat(value) : value;
+
+  // Check for valid number
+  if (numValue === null || numValue === undefined || isNaN(numValue)) {
+    console.log(`Invalid value received: ${value}`);
+    return "N/A";
+  }
+
+  // Format number with appropriate decimal places
+  const formattedValue = Number(numValue).toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  });
+
+  return `${formattedValue} ${unit}`;
+};
+
+const ImpactMetrics = ({ impact }) => {
+  // Check if impact exists and has either breakdown or direct values
+  if (!impact) return null;
+
+  // Get values from either breakdown or direct properties
+  const values = {
+    water: impact.breakdown?.water ?? impact.water,
+    carbon: impact.breakdown?.carbon ?? impact.carbon,
+    energy: impact.breakdown?.energy ?? impact.energy,
+  };
+
+  return (
+    <div className="mt-2 text-sm text-gray-500 space-y-1">
+      <p>Water usage: {formatImpactValue(values.water, "L")}</p>
+      <p>Carbon footprint: {formatImpactValue(values.carbon, "kg CO₂")}</p>
+      {values.energy && (
+        <p>Energy usage: {formatImpactValue(values.energy, "MJ")}</p>
+      )}
+    </div>
+  );
+};
+
 const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
   if (!recommendations || recommendations.length === 0) return null;
 
@@ -49,29 +90,7 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
             {rec.explanation && (
               <p className="text-gray-600 mt-2 text-sm">{rec.explanation}</p>
             )}
-            {rec.impact && (
-              <div className="mt-2 text-sm text-gray-500">
-                <p>
-                  Water usage:{" "}
-                  {rec.impact.breakdown
-                    ? `${rec.impact.breakdown.water.toLocaleString()} L`
-                    : rec.impact.water
-                    ? `${rec.impact.water.toLocaleString()} L`
-                    : "N/A"}
-                </p>
-                <p>
-                  Carbon footprint:{" "}
-                  {rec.impact.breakdown
-                    ? `${rec.impact.breakdown.carbon} kg CO₂`
-                    : rec.impact.carbon
-                    ? `${rec.impact.carbon} kg CO₂`
-                    : "N/A"}
-                </p>
-                {rec.impact.breakdown?.energy && (
-                  <p>Energy usage: {rec.impact.breakdown.energy} MJ</p>
-                )}
-              </div>
-            )}
+            <ImpactMetrics impact={rec.impact} />
           </Motion.li>
         ))}
       </ul>

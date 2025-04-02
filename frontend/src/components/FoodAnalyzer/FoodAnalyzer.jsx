@@ -39,8 +39,6 @@ const FoodAnalyzer = () => {
         getRecommendations(value),
       ]);
 
-      console.log("Raw impact data:", impactResult);
-
       // Validate and normalize impact data
       if (!impactResult || !validateImpactData(impactResult)) {
         throw new Error("Invalid impact data format");
@@ -48,7 +46,6 @@ const FoodAnalyzer = () => {
 
       // Normalize the data structure
       const normalizedImpactData = normalizeImpactData(impactResult);
-      console.log("Normalized impact data:", normalizedImpactData);
 
       setImpactData(normalizedImpactData);
       setRecommendations(recommendationsResult.alternatives || []);

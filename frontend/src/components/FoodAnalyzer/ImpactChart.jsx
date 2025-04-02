@@ -14,8 +14,6 @@ import { motion as Motion } from "framer-motion";
 import { GiWaterDrop } from "react-icons/gi";
 
 const ImpactChart = ({ impactData }) => {
-  console.log("ImpactChart impactData:", impactData);
-
   // Destructure breakdown and provide fallback values
   const { breakdown } = impactData || {};
   const carbon = breakdown?.carbon || 0;

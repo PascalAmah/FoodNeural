@@ -11,7 +11,7 @@ const Hero = () => {
         backgroundImage: "url('/bg-gradient.png')",
       }}
     >
-      <div className="flex items-center justify-center px-4 sm:px-6 md:px-8 py-16 sm:py-16 md:py-22">
+      <div className="flex items-center justify-center px-4 sm:px-6 md:px-8 py-20 sm:py-16 md:py-22">
         <div className="container mx-auto max-w-screen-xl text-center">
           <div className="flex flex-col items-center justify-center space-y-8 md:space-y-6">
             {/* Text Content */}
