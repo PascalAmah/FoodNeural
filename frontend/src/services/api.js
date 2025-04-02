@@ -1,15 +1,47 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.VITE_APP_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_APP_URL || "http://localhost:5000";
 
-// Create axios instance with default config
+console.log("API Base URL:", API_BASE_URL);
+
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+// Add request interceptor
+api.interceptors.request.use(
+  (config) => {
+    console.log(
+      `Request: ${config.method.toUpperCase()} ${config.baseURL}${config.url}`,
+      config.params
+    );
+    return config;
+  },
+  (error) => {
+    console.error("Request Error:", error);
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor
+api.interceptors.response.use(
+  (response) => {
+    console.log("Response:", response.status, response.data);
+    return response;
+  },
+  (error) => {
+    console.error(
+      "Response Error:",
+      error.response?.status,
+      error.response?.data || error.message
+    );
+    return Promise.reject(error);
+  }
+);
 
 export const getFoodImpact = async (foodName) => {
   try {
