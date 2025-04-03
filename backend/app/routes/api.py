@@ -3,6 +3,7 @@ from app.services.food_data_service import FoodDataService
 from app.services.recommendation_service import RecommendationService
 from app.services.ai_recommendation_service import AIRecommendationService
 import logging
+import datetime
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -111,3 +112,13 @@ def search_foods():
     all_foods = food_service.get_all_foods()
     matches = [food for food in all_foods if query in food.lower()]
     return jsonify(matches)
+
+
+@api_bp.route('/health')
+def health_check():
+    """Health check endpoint for monitoring."""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.datetime.utcnow().isoformat(),
+        'version': '1.0.0'
+    }), 200
