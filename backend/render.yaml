@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: foodneural-api
+    env: python
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      python -m spacy download en_core_web_sm
+    startCommand: gunicorn "app:create_app()" --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --access-logfile -
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://food-neural.vercel.app
+      - key: FLASK_APP
+        value: app
+    healthCheckPath: /api/health
+    autoDeploy: true
+    plan: free
+
+  - type: redis
+    name: foodneural-cache
+    ipAllowList: [] # only allow internal connections
+    plan: free
