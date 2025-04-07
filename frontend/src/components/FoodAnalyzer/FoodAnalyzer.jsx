@@ -107,10 +107,9 @@ const FoodAnalyzer = () => {
   const normalizeImpactData = (data) => {
     if (!data) return null;
 
-    // If data already has breakdown structure, return as is
     if (data.breakdown) return data;
 
-    // Convert flat structure to breakdown structure
+    // Converts flat structure to breakdown structure
     return {
       food: data.food,
       score: data.environmental_score || 5,
@@ -138,6 +137,8 @@ const FoodAnalyzer = () => {
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setQuery(value);
+
+    if (error) setError("");
 
     if (!isLoading && value.trim().length > 1) {
       try {
