@@ -1,12 +1,10 @@
+from transformers import pipeline, logging as transformers_logging
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
-from transformers import pipeline
 import os
-from typing import Optional
 import logging
-from transformers import pipeline, logging as transformers_logging
 
 transformers_logging.set_verbosity_error()
 logging.getLogger("transformers").setLevel(logging.ERROR)
@@ -15,19 +13,9 @@ class FoodImpactModel:
     def __init__(self, data_path=None):
         """Initialize the food impact model with data"""
         self.model_name = "distilbert-base-uncased-finetuned-sst-2-english"
-        self.nlp = pipeline(
-            "sentiment-analysis",
-            model=self.model_name,
-            framework="pt",
-            device=-1
-        )
-        try:
-            self.sentiment_analyzer = pipeline("sentiment-analysis", model=self.model_name)
-        except Exception as e:
-            print(f"Warning: Could not initialize sentiment analyzer: {e}")
-            self.sentiment_analyzer = None
+        self.sentiment_analyzer = None
 
-        # Load food data from CSV
+        # Load food data
         if not data_path:
             data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'foods.csv')
         
@@ -36,7 +24,6 @@ class FoodImpactModel:
             print(f"Successfully loaded {len(self.data)} food items from {data_path}")
         except Exception as e:
             print(f"Warning: Could not load data from {data_path}: {e}")
-            # Fall back to default data
             self.data = pd.DataFrame([
                 {"food": "Almond Milk", "carbon": 1.2, "water": 300, "energy": 0.8, "waste": 0.1, "deforestation": 0.2, "impact": "Medium", "description": "Plant-based milk from almonds"},
                 {"food": "Oat Milk", "carbon": 0.5, "water": 150, "energy": 0.4, "waste": 0.05, "deforestation": 0.1, "impact": "Low", "description": "Sustainable oat-based milk"},
@@ -80,19 +67,31 @@ class FoodImpactModel:
     def get_all_foods(self):
         """Return list of all foods in the dataset"""
         return self.data["food"].tolist()
-    
+
+    def _load_sentiment_model(self):
+        """Lazy-load sentiment model only when needed"""
+        if not self.sentiment_analyzer:
+            print("Loading sentiment model...")
+            try:
+                self.sentiment_analyzer = pipeline("sentiment-analysis", model=self.model_name)
+            except Exception as e:
+                print(f"Failed to load sentiment model: {e}")
+                self.sentiment_analyzer = None
+
     def _analyze_description(self, description):
         """Analyze food description using NLP"""
-        entities = self.nlp(description)
-        analysis = {"ingredients": [], "certifications": []}
-        for entity in entities:
-            if entity['entity'].startswith('B-') or entity['entity'].startswith('I-'):
-                if entity['word'] in ["organic", "sustainable", "free-range", "grass-fed"]:
-                    analysis["certifications"].append(entity['word'])
-                else:
-                    analysis["ingredients"].append(entity['word'])
-        return analysis
-    
+        self._load_sentiment_model()
+        if not self.sentiment_analyzer:
+            return {}
+
+        sentiment = self.sentiment_analyzer(description)
+        score = sentiment[0]["score"]
+        label = sentiment[0]["label"]
+        return {
+            "description_sentiment": label,
+            "description_confidence": round(score * 100, 2)
+        }
+
     def _calculate_score(self, food_data):
         """Calculate environmental impact score (0-100, lower is worse)"""
         weights = {'carbon': 0.25, 'water': 0.20, 'energy': 0.15, 'waste': 0.15, 'deforestation': 0.25}
@@ -102,5 +101,4 @@ class FoodImpactModel:
             (food_data.get(metric, 0) / max_values.get(metric, 1)) * weights.get(metric, 0)
             for metric in weights
         )
-        # Invert and normalize to 0-100 (higher score = more sustainable)
         return round(100 - (raw_score * 100), 2)
