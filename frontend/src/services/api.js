@@ -6,7 +6,7 @@ console.log("API Base URL:", API_BASE_URL);
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
-  timeout: 15000,
+  timeout: 30000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -65,11 +65,36 @@ export const getRecommendations = async (foodName, useAI = true, limit = 3) => {
       deforestation_weight: "0.3",
     };
 
-    const response = await api.get(
-      `/recommendations/${encodeURIComponent(foodName)}`,
-      { params }
-    );
-    return response.data;
+    const config = {
+      params,
+      timeout: 25000,
+    };
+
+    try {
+      const response = await api.get(
+        `/recommendations/${encodeURIComponent(foodName)}`,
+        config
+      );
+      return response.data;
+    } catch (error) {
+      // If timeout or server error, try once more with AI disabled
+      if (
+        (error.code === "ECONNABORTED" || error.response?.status >= 500) &&
+        useAI === true
+      ) {
+        console.log("Retrying recommendation without AI...");
+        const fallbackParams = {
+          ...params,
+          use_ai: "false",
+        };
+        const fallbackResponse = await api.get(
+          `/recommendations/${encodeURIComponent(foodName)}`,
+          { params: fallbackParams, timeout: 10000 }
+        );
+        return fallbackResponse.data;
+      }
+      throw error;
+    }
   } catch (error) {
     console.error("Error fetching recommendations:", error);
     throw error;
@@ -80,6 +105,7 @@ export const searchFoods = async (query) => {
   try {
     const response = await api.get("/search", {
       params: { q: query },
+      timeout: 5000,
     });
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {

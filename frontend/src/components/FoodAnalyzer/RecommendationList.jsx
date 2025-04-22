@@ -77,9 +77,11 @@ const RecommendationsList = ({ recommendations, onSelectRecommendation }) => {
             variants={itemVariants}
             className="p-3 md:p-4 bg-green-50 rounded-lg hover:bg-green-100 cursor-pointer 
               transition-colors duration-200"
-            onClick={() => onSelectRecommendation(rec.name)}
           >
-            <h3 className="font-medium text-base md:text-lg text-green-800 font-lora">
+            <h3
+              className="font-medium text-base md:text-lg text-green-800 font-lora"
+              onClick={() => onSelectRecommendation(rec.name)}
+            >
               {rec.name}
             </h3>
             {rec.sustainability_improvement && (

@@ -4,7 +4,7 @@ const About = () => {
   return (
     <section
       id="about"
-      className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-white overfow-x-hidden"
+      className="py-8 sm:py-12 md:py-16 px-4 sm:px-8 md:px-16 bg-white overflow-x-hidden"
       data-aos="fade-up"
     >
       <div className="container mx-auto max-w-7xl">

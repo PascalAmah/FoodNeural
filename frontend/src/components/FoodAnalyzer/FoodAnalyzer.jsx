@@ -14,6 +14,7 @@ const FoodAnalyzer = () => {
   const [query, setQuery] = useState("");
   const [impactData, setImpactData] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
+  const [foodInfo, setFoodInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -32,6 +33,8 @@ const FoodAnalyzer = () => {
     setIsLoading(true);
     setError("");
     setImpactData(null);
+    setFoodInfo(null);
+    setRecommendations([]);
 
     try {
       const [impactResult, recommendationsResult] = await Promise.all([
@@ -48,7 +51,20 @@ const FoodAnalyzer = () => {
       const normalizedImpactData = normalizeImpactData(impactResult);
 
       setImpactData(normalizedImpactData);
-      setRecommendations(recommendationsResult.alternatives || []);
+
+      // Store both alternatives and food info if available
+      if (recommendationsResult) {
+        setRecommendations(recommendationsResult.alternatives || []);
+
+        // If we have food type info, store it
+        if (recommendationsResult.food_info) {
+          setFoodInfo(recommendationsResult.food_info);
+          // Update the query to match the proper food name if available
+          if (recommendationsResult.food_info.name) {
+            setQuery(recommendationsResult.food_info.name);
+          }
+        }
+      }
     } catch (err) {
       console.error("Search error:", err);
       setError(
@@ -62,6 +78,15 @@ const FoodAnalyzer = () => {
       try {
         const recommendationsResult = await getRecommendations(value);
         setRecommendations(recommendationsResult.alternatives || []);
+
+        // If we have food type info, store it
+        if (recommendationsResult.food_info) {
+          setFoodInfo(recommendationsResult.food_info);
+          // Update the query to match the proper food name if available
+          if (recommendationsResult.food_info.name) {
+            setQuery(recommendationsResult.food_info.name);
+          }
+        }
       } catch (recErr) {
         console.error("Recommendations error:", recErr);
         setRecommendations([]);
@@ -189,10 +214,16 @@ const FoodAnalyzer = () => {
     setQuery("");
     setImpactData(null);
     setRecommendations([]);
+    setFoodInfo(null);
     setError("");
     setSuggestions([]);
     setShowSuggestions(false);
     inputRef.current?.focus();
+  };
+
+  const formatNutritionValue = (value, unit = "g") => {
+    if (typeof value !== "number") return `0${unit}`;
+    return `${value.toFixed(1)}${unit}`;
   };
 
   return (
@@ -288,6 +319,94 @@ const FoodAnalyzer = () => {
             className="text-red-500 mb-4"
           >
             {error}
+          </Motion.div>
+        )}
+
+        {/* Enhanced Food Information Card */}
+        {foodInfo && (
+          <Motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 p-5 bg-gray-50 rounded-lg border border-gray-200"
+          >
+            <div className="flex flex-col md:flex-row gap-6">
+              {/* Food info section */}
+              <div className="flex-1">
+                <div className="flex items-center mb-3">
+                  <h3 className="text-xl font-semibold mr-2">
+                    {foodInfo.name}
+                  </h3>
+                  <span className="text-sm px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                    {foodInfo.type}
+                  </span>
+                  {foodInfo.source && (
+                    <span className="ml-2 text-xs text-gray-500">
+                      Source: {foodInfo.source}
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-gray-700 mb-3">{foodInfo.description}</p>
+
+                {foodInfo.details && (
+                  <div className="mt-2">
+                    <p className="text-gray-600 text-sm italic">
+                      {foodInfo.details}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Nutrition facts section */}
+              {foodInfo.nutrition && (
+                <div className="w-full md:w-72 bg-white border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-bold text-center border-b pb-2 mb-2">
+                    Nutrition Facts
+                  </h4>
+                  <div className="text-sm">
+                    {foodInfo.nutrition.calories && (
+                      <div className="flex justify-between py-1 border-b">
+                        <span>Calories</span>
+                        <span>
+                          {formatNutritionValue(
+                            foodInfo.nutrition.calories,
+                            "kcal"
+                          )}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between py-1 border-b">
+                      <span>Protein</span>
+                      <span>
+                        {formatNutritionValue(foodInfo.nutrition.protein, "g")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b">
+                      <span>Fat</span>
+                      <span>
+                        {formatNutritionValue(foodInfo.nutrition.fat, "g")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b">
+                      <span>Carbohydrates</span>
+                      <span>
+                        {formatNutritionValue(foodInfo.nutrition.carbs, "g")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between py-1">
+                      <span>Fiber</span>
+                      <span>
+                        {formatNutritionValue(foodInfo.nutrition.fiber, "g")}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500 text-center">
+                    Values per 100g
+                  </div>
+                </div>
+              )}
+            </div>
           </Motion.div>
         )}
 

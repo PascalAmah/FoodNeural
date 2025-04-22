@@ -2,7 +2,7 @@ import unittest
 import json
 from app import create_app
 from app.services.food_data_service import FoodDataService
-from app.services.recommendation_service import RecommendationService
+from app.services.food_recommendation_service import FoodRecommendationService
 
 class TestAPIRoutes(unittest.TestCase):
     def setUp(self):
@@ -10,7 +10,7 @@ class TestAPIRoutes(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client()
         self.food_service = FoodDataService()
-        self.recommendation_service = RecommendationService()
+        self.recommendation_service = FoodRecommendationService()
 
     def test_get_food_impact(self):
         """Test getting food impact data"""
@@ -33,9 +33,10 @@ class TestAPIRoutes(unittest.TestCase):
         response = self.client.get('/api/recommendations/Beef')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
-        self.assertEqual(data['food'], 'Beef')
         self.assertIn('alternatives', data)
         self.assertIsInstance(data['alternatives'], list)
+        self.assertIn('food_info', data)
+        self.assertIn('source', data)
 
     def test_search_foods(self):
         """Test food search functionality"""
@@ -57,6 +58,18 @@ class TestAPIRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(data, [])
+        
+    def test_get_food_info(self):
+        """Test getting detailed food information"""
+        response = self.client.get('/api/food_info/Beef')
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(data['name'], 'Beef')
+        self.assertIn('type', data)
+        self.assertIn('description', data)
+        self.assertIn('nutrition', data)
+        self.assertIn('protein', data['nutrition'])
+        self.assertIn('calories', data['nutrition'])
 
 if __name__ == '__main__':
     unittest.main()
